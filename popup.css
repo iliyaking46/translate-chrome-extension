@@ -1,0 +1,108 @@
+body {
+    color: #252525;
+    font-family: 'Roboto', arial, sans-serif;
+    font-size: 16px;
+    margin: 0;
+    min-width: 400px;
+}
+
+#content{
+    padding: 15px;
+}
+
+#text-input {
+    width: 100%;
+    margin-right: 15px;
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#text-input:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.btn {
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    color: #ffffff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn:active {
+    color: #fff;
+    background-color: #0062cc;
+    border-color: #005cbf;
+}
+.btn:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+.btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.5);
+    outline: 0;
+}
+
+#search-form {
+    display: flex;
+}
+
+#original {
+    margin: 10px 0;
+}
+
+.translation-header{
+    margin: 0 0 5px;
+}
+
+a {
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+a:hover {
+    text-decoration: none;
+}
+
+.footer {
+    text-align: center;
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: lightgray;
+}
+
+.links {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

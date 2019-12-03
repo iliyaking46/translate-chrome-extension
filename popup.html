@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <!-- compiled files -->
+  <meta charset="utf8">
+  <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+
+<body>
+  <div id="content">
+    <form id="search-form">
+      <input type="text" id="text-input" autofocus="">
+      <button class="btn" id="search-btn" tabindex="0">Перевести</button>
+    </form>
+
+    <div id="original" style="display: none;">
+    </div>
+    <div id="translation" style="display: none;">
+    </div>
+    <div class="links">
+      <button id="copy" style="margin-top: 7px;display: flex;"class="btn" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path fill="#ffffff" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4l6 6v10c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h7zm-1 7h5.5L14 6.5V12z"/></svg> Copy</button>
+      <a id="more" style="display: none;" target="_blank" href="#">Перевести в новом окне</a>
+    </div>
+  </div>
+  <div class="footer">Footer just for design</div>
+  <script src="popup.js"></script>
+</body>
+
+</html>

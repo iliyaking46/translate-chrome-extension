@@ -6,7 +6,7 @@ const getTranslate = (data) => {
     if (!text) return;
 
     const word = text.split(' ')[0];
-    const {sl, tl} = /^[а-яА-Я\d ]+$/.test(word) ? {sl: 'ru', tl: 'en'} : {sl: 'en', tl: 'ru'};
+    const {sl, tl} = /^[а-яёА-ЯЁ\d ]+$/.test(word) ? {sl: 'ru', tl: 'en'} : {sl: 'en', tl: 'ru'};
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${text}`
     fetch(url)
         .then(data => data.json())

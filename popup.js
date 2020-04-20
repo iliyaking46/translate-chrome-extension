@@ -1,13 +1,9 @@
 'use strict';
 
-const getTranslate = (data) => {
-    if (!data) return;
-    const text = typeof data === 'string' ? data : data[0];
-    if (!text) return;
-
-    const word = text.split(' ')[0];
-    const {sl, tl} = /^[а-яёА-ЯЁ\d ]+$/.test(word) ? {sl: 'ru', tl: 'en'} : {sl: 'en', tl: 'ru'};
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${text}`
+const applyTranslate = (text, {languages = []}) => {
+    const language = languages[0]?.language;
+    const {sl, tl} = language === 'ru' ? {sl: 'ru', tl: 'en'} : {sl: language, tl: 'ru'};
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${text}`;
     fetch(url)
         .then(data => data.json())
         .then((data) => {
@@ -18,6 +14,14 @@ const getTranslate = (data) => {
                 setTranslation({original, translation, sl, tl})
             }
         })
+};
+
+const getTranslate = (data) => {
+    if (!data) return;
+    const text = typeof data === 'string' ? data : data[0];
+    if (!text) return;
+
+    chrome.i18n.detectLanguage(text, (result) => applyTranslate(text, result))
 };
 
 const setTranslation = ({original, translation, sl, tl}) => {

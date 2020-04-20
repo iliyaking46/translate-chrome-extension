@@ -29,7 +29,7 @@ const setTranslation = ({original, translation, sl, tl}) => {
     translatedTextBlock.innerHTML = translation;
     translatedTextBlock.style.display = 'block';
 
-    const copyButton = document.getElementById('copy')
+    const copyButton = document.getElementById('copy');
     copyButton.onclick = () => copyToClipboard(translation);
     copyButton.style.display = 'flex';
 

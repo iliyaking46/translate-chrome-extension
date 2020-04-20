@@ -6,7 +6,7 @@ body {
     min-width: 400px;
 }
 
-#content{
+#content {
     padding: 15px;
 }
 
@@ -14,7 +14,6 @@ body {
     width: 100%;
     margin-right: 15px;
     display: block;
-    width: 100%;
     padding: .375rem .75rem;
     font-size: 15px;
     line-height: 1.5;
@@ -23,7 +22,7 @@ body {
     background-clip: padding-box;
     border: 1px solid #ced4da;
     border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 #text-input:focus {
@@ -31,7 +30,7 @@ body {
     background-color: #fff;
     border-color: #80bdff;
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
 }
 
 .btn {
@@ -45,28 +44,30 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    border: 1px solid transparent;
+    border: 1px solid #007bff;
     padding: .375rem .75rem;
     font-size: 1rem;
     line-height: 1.5;
     border-radius: .25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     color: #ffffff;
     background-color: #007bff;
-    border-color: #007bff;
 }
+
 .btn:active {
     color: #fff;
     background-color: #0062cc;
     border-color: #005cbf;
 }
+
 .btn:hover {
     color: #fff;
     background-color: #0069d9;
     border-color: #0062cc;
 }
+
 .btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.5);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .5);
     outline: 0;
 }
 
@@ -78,7 +79,7 @@ body {
     margin: 10px 0;
 }
 
-.translation-header{
+.translation-header {
     margin: 0 0 5px;
 }
 
@@ -87,13 +88,20 @@ a {
     color: #007bff;
     text-decoration: none;
     background-color: transparent;
-    -webkit-text-decoration-skip: objects;
+    text-decoration-skip: objects;
 }
+
 a:hover {
     text-decoration: none;
 }
 
+#link-icon {
+    vertical-align: text-top;
+    fill: #007bff;
+}
+
 .footer {
+    display: block;
     text-align: center;
     padding: 5px 10px;
     font-size: 12px;

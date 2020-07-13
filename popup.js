@@ -1,9 +1,19 @@
 'use strict';
 
-const applyTranslate = (text, {languages = []}) => {
-    const language = languages[0]?.language;
-    const {sl, tl} = language === 'ru' ? {sl: 'ru', tl: 'en'} : {sl: language, tl: 'ru'};
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${text}`;
+const originalTextBlock = document.getElementById('original');
+const translatedTextBlock = document.getElementById('translation');
+const moreLink = document.getElementById('more');
+const copyButton = document.getElementById('copy-btn');
+const footer = document.getElementsByClassName('footer')[0];
+const textInput = document.getElementById('text-input')
+
+const getTranslate = (data) => {
+    if (!data) return;
+    const text = typeof data === 'string' ? data : data[0];
+    if (!text) return;
+
+    const {sl, tl} = /[а-яёА-ЯЁ]+/.test(text) ? {sl: 'ru', tl: 'en'} : {sl: 'en', tl: 'ru'};
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${text}`
     fetch(url)
         .then(data => data.json())
         .then((data) => {
@@ -16,30 +26,20 @@ const applyTranslate = (text, {languages = []}) => {
         })
 };
 
-const getTranslate = (data) => {
-    if (!data) return;
-    const text = typeof data === 'string' ? data : data[0];
-    if (!text) return;
-
-    chrome.i18n.detectLanguage(text, (result) => applyTranslate(text, result))
-};
-
 const setTranslation = ({original, translation, sl, tl}) => {
-    const originalTextBlock = document.getElementById('original');
     originalTextBlock.innerHTML = original;
     originalTextBlock.style.display = 'block';
 
-    const translatedTextBlock = document.getElementById('translation');
     translatedTextBlock.innerHTML = translation;
     translatedTextBlock.style.display = 'block';
 
-    const copyButton = document.getElementById('copy');
     copyButton.onclick = () => copyToClipboard(translation);
     copyButton.style.display = 'flex';
 
-    const moreLink = document.getElementById('more');
     moreLink.href = `https://translate.google.com/#${sl}/${tl}/${original}`;
     moreLink.style.display = 'inline-block';
+
+    footer.href = `https://translate.google.com/#${sl}/${tl}/${original}`;
 };
 
 // copy to clipboard
@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('search-form').onsubmit = (e) => {
     e.preventDefault();
-    const value = document.getElementById('text-input').value;
+    const value = textInput.value;
     getTranslate(value);
-    document.getElementById('text-input').value = '';
 };

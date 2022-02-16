@@ -11,15 +11,17 @@
 
 <body>
   <div id="content">
-    <form id="search-form">
-      <input type="text" id="text-input" autofocus="">
-      <button class="btn" id="search-btn" tabindex="0">Перевести</button>
-    </form>
+    <div class="input-area">
+      <textarea type="text" id="text-input" autofocus="" rows="5"></textarea>
+    </div>
 
-    <div id="original" style="display: none;">
+    <div id="translate-box" style="display: none;">
+      <div id="original"></div>
+      <hr class="divider">
+      <div id="translation">
+      </div>
     </div>
-    <div id="translation" style="display: none;">
-    </div>
+    
     <div class="links">
       <button id="copy-btn" style="margin-top: 7px; display: none;" class="btn" tabindex="0">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">

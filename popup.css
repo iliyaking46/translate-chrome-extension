@@ -3,19 +3,22 @@ body {
     font-family: 'Roboto', arial, sans-serif;
     font-size: 16px;
     margin: 0;
-    min-width: 400px;
+    min-width: 450px;
 }
 
 #content {
     padding: 15px;
 }
-
+.input-area {
+    display: flex;
+}
 #text-input {
     width: 100%;
     margin-right: 15px;
     display: block;
     padding: .375rem .75rem;
     font-size: 15px;
+    font-family: inherit;
     line-height: 1.5;
     color: #495057;
     background-color: #fff;
@@ -73,10 +76,19 @@ body {
 
 #search-form {
     display: flex;
+    align-items: center;
 }
 
 #original {
     margin: 10px 0;
+}
+
+#original, #translation {
+    white-space: pre-wrap;
+}
+
+.divider {
+    border: 1px solid #302b2b;
 }
 
 .translation-header {

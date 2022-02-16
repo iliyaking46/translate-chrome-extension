@@ -6,6 +6,6 @@ Chrome extension for translating into RU from EN and backwards
   ```Shell
   $ git clone https://github.com/iliyaking46/translate-chrome-extension.git
   ```
-  Включите в Сhrome режим разработчика
+  Включите в Chrome режим разработчика
 
   Нажмите "Загрузить распакованное расширение" и укажите папку с расширением

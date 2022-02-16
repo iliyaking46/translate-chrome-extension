@@ -1,11 +1,12 @@
 'use strict';
 
+const translateBox = document.getElementById('translate-box');
 const originalTextBlock = document.getElementById('original');
 const translatedTextBlock = document.getElementById('translation');
 const moreLink = document.getElementById('more');
 const copyButton = document.getElementById('copy-btn');
 const footer = document.getElementsByClassName('footer')[0];
-const textInput = document.getElementById('text-input')
+const textInput = document.getElementById('text-input');
 
 const getTranslate = (data) => {
     if (!data) return;
@@ -13,37 +14,50 @@ const getTranslate = (data) => {
     if (!text) return;
 
     const {sl, tl} = /[а-яёА-ЯЁ]+/.test(text) ? {sl: 'ru', tl: 'en'} : {sl: 'en', tl: 'ru'};
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${text}`
+
+    footer.href = `https://translate.google.com/#${sl}/${tl}/${encodeURI(text)}`;
+
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${encodeURI(text)}`;
+
     fetch(url)
-        .then(data => data.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json(); //we only get here if there is no error
+        })
         .then((data) => {
             const {sentences} = data;
             if (sentences && sentences.length > 0) {
-                const original = sentences.map(({orig}) => orig).join('\n');
-                const translation = sentences.map(({trans}) => trans).join(' ');
-                setTranslation({original, translation, sl, tl})
+                const original = sentences.map(({orig}) => orig).join('');
+                const translation = sentences.map(({trans}) => trans).join('');
+                setTranslation({original, translation, sl, tl});
             }
         })
+        .catch((err) => {
+            const original = `Something went wrong, click link bellow for fix<br/><a href=${url} target="_blank">enter captha at google translate...</a>`;
+            setTranslation({original, translation: ''});
+            // err.text().then(log.error);
+        });
 };
 
 const setTranslation = ({original, translation, sl, tl}) => {
     originalTextBlock.innerHTML = original;
-    originalTextBlock.style.display = 'block';
+    translatedTextBlock.innerText = translation;
 
-    translatedTextBlock.innerHTML = translation;
-    translatedTextBlock.style.display = 'block';
+    translateBox.style.display = 'block';
 
-    copyButton.onclick = () => copyToClipboard(translation);
-    copyButton.style.display = 'flex';
+    if (sl && tl) {
+        copyButton.onclick = () => copyToClipboard(translation);
+        copyButton.style.display = 'flex';
 
-    moreLink.href = `https://translate.google.com/#${sl}/${tl}/${original}`;
-    moreLink.style.display = 'inline-block';
-
-    footer.href = `https://translate.google.com/#${sl}/${tl}/${original}`;
+        moreLink.href = `https://translate.google.com/#${sl}/${tl}/${original}`;
+        moreLink.style.display = 'inline-block';
+    }
 };
 
 // copy to clipboard
-const copyToClipboard = str => {
+const copyToClipboard = (str) => {
     const el = document.createElement('textarea');
     el.value = str;
     el.setAttribute('readonly', '');
@@ -57,14 +71,26 @@ const copyToClipboard = str => {
 
 // translate from selection
 document.addEventListener('DOMContentLoaded', () => {
-    chrome.tabs.executeScript(
-        {code: 'window.getSelection().toString().trim();'},
-        getTranslate,
-    );
+    chrome.tabs.executeScript({code: 'window.getSelection().toString().trim();'}, (value = '') => {
+        textInput.value = value;
+        getTranslate(value);
+    });
 });
 
-document.getElementById('search-form').onsubmit = (e) => {
-    e.preventDefault();
-    const value = textInput.value;
-    getTranslate(value);
-};
+textInput.addEventListener(
+    'keyup',
+    debounce((event) => {
+        getTranslate(event.target.value);
+    })
+);
+
+function debounce(func) {
+    let timer;
+    return (...args) => {
+        const next = () => func(...args);
+        if (timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(next, 300);
+    };
+}

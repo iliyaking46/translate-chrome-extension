@@ -1,5 +1,5 @@
 {
-  "name": "Translate app",
+  "name": "Translate Helper",
   "description": "Extension for easy translate from EN to RU and backwards.",
   "version": "1.1.0",
   "action": {
@@ -13,7 +13,7 @@
         "default": "Alt + Q",
         "mac": "MacCtrl + Q"
       },
-      "description": "Open translator"
+      "description": "Open extention"
     }
   },
   "background": {

@@ -4,40 +4,46 @@
 <head>
   <title></title>
   <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-  <!-- compiled files -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <meta charset="utf8">
   <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 
 <body>
-  <div id="content">
+  <div class="content">
+    <div class="lang-info">
+      <span class="lang left" id="source-lang">ENGLISH</span>
+      <button id="swap-button" class="lang-swap btn" role="button" tabindex="0" aria-label="Переключить язык"
+        data-tooltip="Переключить язык" data-hotkey="Option+S">
+    
+        <svg width="15" height="13" viewBox="0 0 15 13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13.5818 9.47619L14.1122 8.94586L14.6425 9.47619L14.1122 10.0065L13.5818 9.47619ZM1.00001 10.2262C0.585793 10.2262 0.250007 9.8904 0.250007 9.47619C0.250007 9.06197 0.585793 8.72619 1.00001 8.72619L1.00001 10.2262ZM11.4634 6.29705L14.1122 8.94586L13.0515 10.0065L10.4027 7.35771L11.4634 6.29705ZM14.1122 10.0065L11.4634 12.6553L10.4027 11.5947L13.0515 8.94586L14.1122 10.0065ZM13.5818 10.2262L1.00001 10.2262L1.00001 8.72619L13.5818 8.72619L13.5818 10.2262Z" />
+          <path d="M1.13245 3.64881L0.602116 3.11848L0.0717859 3.64881L0.602116 4.17914L1.13245 3.64881ZM13.7143 4.39881C14.1285 4.39881 14.4643 4.06302 14.4643 3.64881C14.4643 3.2346 14.1285 2.89881 13.7143 2.89881L13.7143 4.39881ZM3.25092 0.46967L0.602116 3.11848L1.66278 4.17914L4.31159 1.53033L3.25092 0.46967ZM0.602116 4.17914L3.25092 6.82795L4.31158 5.76729L1.66278 3.11848L0.602116 4.17914ZM1.13245 4.39881L13.7143 4.39881L13.7143 2.89881L1.13245 2.89881L1.13245 4.39881Z" />
+          </svg>
+      </button>
+      <span class="lang" id="translated-lang">РУССКИЙ</span>
+    </div>
+    <div class="divider"></div>
     <div class="input-area">
-      <textarea type="text" id="text-input" autofocus="" rows="5" placeholder="The text will be automatically translated"></textarea>
+      <textarea type="text" id="text-input" autofocus="" rows="7"
+        placeholder="The text will be automatically translated"></textarea>
     </div>
 
-    <div id="translate-box" style="display: none;">
-      <div id="original"></div>
-      <hr class="divider">
-      <div id="translation">
-      </div>
-    </div>
-    
-    <div class="links">
-      <button id="copy-btn" style="margin-top: 7px; display: none;" class="btn" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-          <path fill="none" d="M0 0h24v24H0z"/>
-          <path fill="#ffffff" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4l6 6v10c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h7zm-1 7h5.5L14 6.5V12z"/>
+    <div id="translate-box">
+      <div id="translation"></div>
+      <button id="copy-btn" class="copy btn" tabindex="0">
+        <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
+            d="M3.8 0C3.35817 0 3 0.358172 3 0.8V2H11.2C11.6418 2 12 2.35817 12 2.8V11H13.2C13.6418 11 14 10.6418 14 10.2V0.8C14 0.358172 13.6418 0 13.2 0H3.8Z" />
+          <rect y="3" width="11" height="11" rx="0.8" fill="currentColor" />
         </svg>
-        Copy
       </button>
-      <a id="more" style="display: none;" target="_blank" href="#">Translate in the new tab
-        <svg id="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px">
-          <path d="M0 0h24v24H0z" fill="none"/>
-          <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-        </svg></a>
     </div>
   </div>
-  <a class="footer" href="https://translate.google.com/" target="_blank">Go to Google Translate</a>
+  <a class="link powered" href="https://t.me/iliyaking46" target="_blank">Powered by iliyaking</a>
+  <a class="link more" href="https://translate.google.com/" target="_blank">Translate in <b>Google</b></a>
   <script src="popup.js"></script>
 </body>
 

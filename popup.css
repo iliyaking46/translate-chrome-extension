@@ -22,6 +22,7 @@ body {
     height: 24px;
     line-height: 24px;
     margin: 0 20px;
+    transition: opacity .2s;
 }
 
 .lang.left {
@@ -38,6 +39,7 @@ body {
 .input-area {
     display: flex;
     padding: 15px;
+    position: relative;
 }
 
 #text-input {
@@ -49,6 +51,7 @@ body {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
+    min-height: 160px;
     padding: 0;
     padding-right: 15px;
     width: 100%;
@@ -75,11 +78,17 @@ body {
     align-items: center;
 }
 
-#translation {
+.translation {
     max-height: 330px;
+    opacity: 1;
     overflow-y: scroll;
     white-space: pre-wrap;
     word-break: break-word;
+    transition: opacity .2s,visibility .2s;
+}
+
+.fade {
+    opacity: 0;
 }
 
 .divider {
@@ -148,7 +157,7 @@ body {
     transform: rotate(180deg);
 }
 
-.copy.btn {
+.btn.copy, .btn.clear {
     position: absolute;
     top: 5px;
     right: 5px;

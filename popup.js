@@ -4,6 +4,7 @@ const swapButton = document.getElementById('swap-button');
 const [source, translated] = document.getElementsByClassName('lang')
 const translatedTextBlock = document.getElementById('translation');
 const copyButton = document.getElementById('copy-btn');
+const clearButton = document.getElementById('clear-btn');
 const more = document.getElementsByClassName('more')[0];
 const textInput = document.getElementById('text-input');
 const SOURCES = {
@@ -16,6 +17,8 @@ swapButton.onclick = swapLanguages
 
 copyButton.onclick = copyToClipboard;
 
+clearButton.onclick = clearInput;
+
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -25,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             function: () => window.getSelection().toString().trim(),
         });
         const { result = '' } = injectionResult
+        checkTextSize(result)
         textInput.value = result;
         startTranslate(result);
     } catch (error) {
@@ -32,10 +36,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+textInput.addEventListener('input', ({ target }) => checkTextSize(target.value))
+
 textInput.addEventListener(
-    'keyup',
-    debounce((event) => {
-        startTranslate(event.target.value);
+    'input',
+    debounce(({ target }) => {
+        const { value } = target;
+        if (value) {
+            startTranslate(value);
+        } else {
+            setTranslation({ translation: '' })
+        }
     })
 );
 
@@ -43,7 +54,7 @@ function startTranslate(data) {
     if (!data) return;
     const text = typeof data === 'string' ? data : data[0];
     if (!text) return;
-    checkTextSize(text)
+
     const { sl, tl } = /[а-яёА-ЯЁ]+/.test(text) ? { sl: SOURCES.RU, tl: SOURCES.EN } : { sl: SOURCES.EN, tl: SOURCES.RU };
     if (sl != currentSource) {
         currentSource = sl;
@@ -53,11 +64,6 @@ function startTranslate(data) {
 }
 
 function swapLanguages() {
-    if (swapButton.classList.contains('rotate')) {
-        swapButton.classList.remove('rotate')
-    } else {
-        swapButton.classList.add('rotate')
-    }
     swapLanguageInfo()
 
     textInput.value = translatedTextBlock.innerText;
@@ -69,22 +75,30 @@ function swapLanguages() {
     currentSource = newSource;
 }
 
+function clearInput() {
+    textInput.value = ''
+    setTranslation({ translation: '' })
+}
+
 async function getTranslate({ text, sl, tl }) {
     if (!text) return;
 
+    translatedTextBlock.classList.add('fade')
     more.href = `https://translate.google.com/#${sl}/${tl}/${encodeURI(text)}`;
 
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${encodeURI(text)}`;
 
     try {
-        const response = await fetch(url)
+        const delay = new Promise(resolve => setTimeout(resolve, 100));
+    
+        const [response] = await Promise.all([fetch(url), delay])
+
         if (!response.ok) {
             throw new Error(response);
         }
 
         const { sentences } = await response.json()
         if (sentences && sentences.length > 0) {
-            const original = sentences.map(({ orig }) => orig).join(' ');
             const translation = sentences.map(({ trans }) => trans).join('');
             setTranslation({ translation });
         }
@@ -101,12 +115,24 @@ function setTranslation({ translation, error }) {
     } else {
         translatedTextBlock.innerText = translation;
     }
+    translatedTextBlock.classList.remove('fade')
 };
 
 function swapLanguageInfo() {
-    const temp = source.textContent
-    source.textContent = translated.textContent
-    translated.textContent = temp
+    source.classList.add('fade')
+    translated.classList.add('fade')
+    if (swapButton.classList.contains('rotate')) {
+        swapButton.classList.remove('rotate')
+    } else {
+        swapButton.classList.add('rotate')
+    }
+    setTimeout(() => {
+        const temp = source.textContent
+        source.textContent = translated.textContent
+        translated.textContent = temp
+        source.classList.remove('fade')
+        translated.classList.remove('fade')
+    }, 150)
 }
 
 function checkTextSize(text) {

@@ -17,22 +17,29 @@
       <span class="lang left" id="source-lang">ENGLISH</span>
       <button id="swap-button" class="lang-swap btn" role="button" tabindex="0" aria-label="Переключить язык"
         data-tooltip="Переключить язык" data-hotkey="Option+S">
-    
         <svg width="15" height="13" viewBox="0 0 15 13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13.5818 9.47619L14.1122 8.94586L14.6425 9.47619L14.1122 10.0065L13.5818 9.47619ZM1.00001 10.2262C0.585793 10.2262 0.250007 9.8904 0.250007 9.47619C0.250007 9.06197 0.585793 8.72619 1.00001 8.72619L1.00001 10.2262ZM11.4634 6.29705L14.1122 8.94586L13.0515 10.0065L10.4027 7.35771L11.4634 6.29705ZM14.1122 10.0065L11.4634 12.6553L10.4027 11.5947L13.0515 8.94586L14.1122 10.0065ZM13.5818 10.2262L1.00001 10.2262L1.00001 8.72619L13.5818 8.72619L13.5818 10.2262Z" />
-          <path d="M1.13245 3.64881L0.602116 3.11848L0.0717859 3.64881L0.602116 4.17914L1.13245 3.64881ZM13.7143 4.39881C14.1285 4.39881 14.4643 4.06302 14.4643 3.64881C14.4643 3.2346 14.1285 2.89881 13.7143 2.89881L13.7143 4.39881ZM3.25092 0.46967L0.602116 3.11848L1.66278 4.17914L4.31159 1.53033L3.25092 0.46967ZM0.602116 4.17914L3.25092 6.82795L4.31158 5.76729L1.66278 3.11848L0.602116 4.17914ZM1.13245 4.39881L13.7143 4.39881L13.7143 2.89881L1.13245 2.89881L1.13245 4.39881Z" />
-          </svg>
+          <path
+            d="M13.5818 9.47619L14.1122 8.94586L14.6425 9.47619L14.1122 10.0065L13.5818 9.47619ZM1.00001 10.2262C0.585793 10.2262 0.250007 9.8904 0.250007 9.47619C0.250007 9.06197 0.585793 8.72619 1.00001 8.72619L1.00001 10.2262ZM11.4634 6.29705L14.1122 8.94586L13.0515 10.0065L10.4027 7.35771L11.4634 6.29705ZM14.1122 10.0065L11.4634 12.6553L10.4027 11.5947L13.0515 8.94586L14.1122 10.0065ZM13.5818 10.2262L1.00001 10.2262L1.00001 8.72619L13.5818 8.72619L13.5818 10.2262Z" />
+          <path
+            d="M1.13245 3.64881L0.602116 3.11848L0.0717859 3.64881L0.602116 4.17914L1.13245 3.64881ZM13.7143 4.39881C14.1285 4.39881 14.4643 4.06302 14.4643 3.64881C14.4643 3.2346 14.1285 2.89881 13.7143 2.89881L13.7143 4.39881ZM3.25092 0.46967L0.602116 3.11848L1.66278 4.17914L4.31159 1.53033L3.25092 0.46967ZM0.602116 4.17914L3.25092 6.82795L4.31158 5.76729L1.66278 3.11848L0.602116 4.17914ZM1.13245 4.39881L13.7143 4.39881L13.7143 2.89881L1.13245 2.89881L1.13245 4.39881Z" />
+        </svg>
       </button>
       <span class="lang" id="translated-lang">РУССКИЙ</span>
     </div>
     <div class="divider"></div>
     <div class="input-area">
       <textarea type="text" id="text-input" autofocus="" rows="7"
-        placeholder="The text will be automatically translated"></textarea>
+        placeholder="Text will be automatically translated"></textarea>
+      <button id="clear-btn" class="clear btn" tabindex="0">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 1L1 12" stroke="currentColor" stroke-width="1.83333" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M1 1L12 12" stroke="currentColor" stroke-width="1.83333" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
     </div>
 
     <div id="translate-box">
-      <div id="translation"></div>
+      <div id="translation" class="translation"></div>
       <button id="copy-btn" class="copy btn" tabindex="0">
         <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"

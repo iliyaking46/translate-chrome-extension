@@ -39,6 +39,7 @@ body {
 .input-area {
     display: flex;
     padding: 15px;
+    padding-right: 40px;
     position: relative;
 }
 
@@ -53,8 +54,8 @@ body {
     line-height: inherit;
     min-height: 160px;
     padding: 0;
-    padding-right: 15px;
     width: 100%;
+    resize: none;
 }
 
 #text-input:focus {
@@ -70,7 +71,7 @@ body {
     min-height: 150px;
     position: relative;
     padding: 15px;
-    padding-right: 30px;
+    padding-right: 40px;
 }
 
 #search-form {
@@ -79,12 +80,12 @@ body {
 }
 
 .translation {
-    max-height: 330px;
+    max-height: 270px;
     opacity: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
     white-space: pre-wrap;
     word-break: break-word;
-    transition: opacity .2s,visibility .2s;
+    transition: opacity .2s, visibility .2s;
 }
 
 .fade {
@@ -157,7 +158,8 @@ body {
     transform: rotate(180deg);
 }
 
-.btn.copy, .btn.clear {
+.btn.copy,
+.btn.clear {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -185,6 +187,10 @@ a {
 }
 
 @media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+
     body {
         background: #121214;
         color: #fff
@@ -209,7 +215,7 @@ a {
     .btn:after {
         box-shadow: 0 0 15px 5px #121212;
     }
-    
+
     .btn:active:after {
         box-shadow: 0 0 0 0 #121212;
     }

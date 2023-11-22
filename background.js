@@ -1,7 +1,7 @@
 const CONTEXT_MENU_ID = 'translate-ext'
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({ title: 'Translate selected text', contexts: ['selection'], id: CONTEXT_MENU_ID })
+  chrome.contextMenus.create({ title: 'Translate text', contexts: ['selection'], id: CONTEXT_MENU_ID })
 });
 
 chrome.contextMenus.onClicked.addListener(

@@ -1,17 +1,19 @@
 'use strict';
+import { LANGUAGES } from './languages.js';
 
 const swapButton = document.getElementById('swap-button');
-const [source, translated] = document.getElementsByClassName('lang')
+const [source, target] = document.getElementsByClassName('lang')
 const translatedTextBlock = document.getElementById('translation');
 const copyButton = document.getElementById('copy-btn');
 const clearButton = document.getElementById('clear-btn');
 const more = document.getElementsByClassName('more')[0];
 const textInput = document.getElementById('text-input');
-const SOURCES = {
+
+const LANGUAGE_CODES = {
     EN: 'en',
-    RU: 'ru'
+    RU: 'ru',
+    AUTO: 'auto',
 }
-let currentSource = SOURCES.EN
 
 swapButton.onclick = swapLanguages
 
@@ -55,29 +57,28 @@ function startTranslate(data) {
     const text = typeof data === 'string' ? data : data[0];
     if (!text) return;
 
-    const { sl, tl } = /[а-яёА-ЯЁ]+/.test(text) ? { sl: SOURCES.RU, tl: SOURCES.EN } : { sl: SOURCES.EN, tl: SOURCES.RU };
-    if (sl != currentSource) {
-        currentSource = sl;
-        swapLanguageInfo()
+    const { sl, tl } = /[а-яёА-ЯЁ]+/.test(text) ? { sl: LANGUAGE_CODES.RU, tl: LANGUAGE_CODES.EN } : { sl: LANGUAGE_CODES.AUTO, tl: LANGUAGE_CODES.RU };
+
+    if (source.dataset.lang !== sl || target.dataset.lang !== tl) {
+        if (source.dataset.lang !== sl && target.dataset.lang !== tl) {
+            // change languages without rotate animation
+            swapLanguageInfo(sl, tl, false)
+        } else {
+            changeLanguageInfo(sl, tl)
+        }
     }
+
     getTranslate({ text, sl, tl })
 }
 
 function swapLanguages() {
-    swapLanguageInfo()
+    const [sl, tl] = swapLanguageInfo()
 
     textInput.value = translatedTextBlock.innerText;
     translatedTextBlock.innerText = ''
     checkTextSize(textInput.value)
 
-    const newSource = currentSource === SOURCES.EN ? SOURCES.RU : SOURCES.EN
-    getTranslate({ text: textInput.value, sl: newSource, tl: currentSource })
-    currentSource = newSource;
-}
-
-function clearInput() {
-    textInput.value = ''
-    setTranslation({ translation: '' })
+    getTranslate({ text: textInput.value, sl, tl })
 }
 
 async function getTranslate({ text, sl, tl }) {
@@ -90,14 +91,20 @@ async function getTranslate({ text, sl, tl }) {
 
     try {
         const delay = new Promise(resolve => setTimeout(resolve, 100));
-    
+
         const [response] = await Promise.all([fetch(url), delay])
 
         if (!response.ok) {
             throw new Error(response);
         }
 
-        const { sentences } = await response.json()
+        const { sentences, src } = await response.json()
+
+        const currentSourceLang = source.dataset.lang
+        if (currentSourceLang !== src) {
+            changeLanguageInfo(src, tl)
+        }
+
         if (sentences && sentences.length > 0) {
             const translation = sentences.map(({ trans }) => trans).join('');
             setTranslation({ translation });
@@ -118,21 +125,43 @@ function setTranslation({ translation, error }) {
     translatedTextBlock.classList.remove('fade')
 };
 
-function swapLanguageInfo() {
-    source.classList.add('fade')
-    translated.classList.add('fade')
-    if (swapButton.classList.contains('rotate')) {
-        swapButton.classList.remove('rotate')
-    } else {
-        swapButton.classList.add('rotate')
-    }
+function changeLanguageInfo(sl, tl) {
+    const isSourceLangChanged = sl !== source.dataset.lang
+    const current = isSourceLangChanged ? source : target
+
+    current.dataset.lang = isSourceLangChanged ? sl : tl
+    current.classList.add('fade')
+
     setTimeout(() => {
-        const temp = source.textContent
-        source.textContent = translated.textContent
-        translated.textContent = temp
-        source.classList.remove('fade')
-        translated.classList.remove('fade')
+        current.textContent = LANGUAGES[current.dataset.lang] || 'UNKNOWN'
+        current.classList.remove('fade')
     }, 150)
+}
+
+function swapLanguageInfo(sl, tl, withRotate = true) {
+    const tempSourceLang = tl || source.dataset.lang
+    source.dataset.lang = sl || target.dataset.lang
+    target.dataset.lang = tempSourceLang
+
+    source.classList.add('fade')
+    target.classList.add('fade')
+
+    if (withRotate) {
+        if (swapButton.classList.contains('rotate')) {
+            swapButton.classList.remove('rotate')
+        } else {
+            swapButton.classList.add('rotate')
+        }
+    }
+
+    setTimeout(() => {
+        source.textContent = LANGUAGES[source.dataset.lang] || 'UNKNOWN'
+        target.textContent = LANGUAGES[target.dataset.lang] || 'UNKNOWN'
+        source.classList.remove('fade')
+        target.classList.remove('fade')
+    }, 150)
+
+    return [source.dataset.lang, target.dataset.lang]
 }
 
 function checkTextSize(text) {
@@ -145,18 +174,10 @@ function checkTextSize(text) {
     }
 }
 
-// copy to clipboard
-// function copyToClipboard(str) {
-//     const el = document.createElement('textarea');
-//     el.value = str;
-//     el.setAttribute('readonly', '');
-//     el.style.position = 'absolute';
-//     el.style.left = '-9999px';
-//     document.body.appendChild(el);
-//     el.select();
-//     document.execCommand('copy');
-//     document.body.removeChild(el);
-// };
+function clearInput() {
+    textInput.value = ''
+    setTranslation({ translation: '' })
+}
 
 function copyToClipboard() {
     const text = translatedTextBlock.innerText;

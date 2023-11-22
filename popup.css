@@ -129,7 +129,7 @@ body {
     transition-duration: 0.1s;
 }
 
-.btn:after {
+/* .btn:after {
     content: "";
     display: block;
     position: absolute;
@@ -151,8 +151,7 @@ body {
     top: 0;
     opacity: 1;
     transition: 0s;
-}
-
+} */
 
 .rotate {
     transform: rotate(180deg);
@@ -167,7 +166,8 @@ body {
 
 a {
     background-color: transparent;
-    text-decoration: none;
+    /* text-decoration: none; */
+    text-decoration-thickness: 0.1px;
 }
 
 .link {
@@ -184,6 +184,11 @@ a {
 
 .link.more {
     float: right;
+}
+
+.link-arrow {
+    font-weight: bold;
+    font-family: monospace;
 }
 
 @media (prefers-color-scheme: dark) {

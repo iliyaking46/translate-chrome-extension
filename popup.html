@@ -14,7 +14,7 @@
 <body>
   <div class="content">
     <div class="lang-info">
-      <span class="lang left" id="source-lang">ENGLISH</span>
+      <span class="lang left" id="source-lang" data-lang="auto">Detect language</span>
       <button id="swap-button" class="lang-swap btn" role="button" tabindex="0" aria-label="Переключить язык"
         data-tooltip="Переключить язык" data-hotkey="Option+S">
         <svg width="15" height="13" viewBox="0 0 15 13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,7 @@
             d="M1.13245 3.64881L0.602116 3.11848L0.0717859 3.64881L0.602116 4.17914L1.13245 3.64881ZM13.7143 4.39881C14.1285 4.39881 14.4643 4.06302 14.4643 3.64881C14.4643 3.2346 14.1285 2.89881 13.7143 2.89881L13.7143 4.39881ZM3.25092 0.46967L0.602116 3.11848L1.66278 4.17914L4.31159 1.53033L3.25092 0.46967ZM0.602116 4.17914L3.25092 6.82795L4.31158 5.76729L1.66278 3.11848L0.602116 4.17914ZM1.13245 4.39881L13.7143 4.39881L13.7143 2.89881L1.13245 2.89881L1.13245 4.39881Z" />
         </svg>
       </button>
-      <span class="lang" id="translated-lang">РУССКИЙ</span>
+      <span class="lang" id="translated-lang" data-lang="ru">Russian</span>
     </div>
     <div class="divider"></div>
     <div class="input-area">
@@ -50,8 +50,9 @@
     </div>
   </div>
   <a class="link powered" href="https://t.me/iliyaking46" target="_blank">Powered by iliyaking</a>
-  <a class="link more" href="https://translate.google.com/" target="_blank">Translate in <b>Google</b></a>
-  <script src="popup.js"></script>
+  <a class="link more" href="https://translate.google.com/" target="_blank">Translate on <b>Google</b> <span class="link-arrow">→</span></a>
+  <script src="languages.js" type="module"></script>
+  <script src="popup.js" type="module"></script>
 </body>
 
 </html>

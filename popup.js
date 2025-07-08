@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { result = '' } = injectionResult
         checkTextSize(result)
         textInput.value = result;
-        startTranslate(result);
+        onTranslate(result);
     } catch (error) {
         console.log(error)
     }
@@ -45,28 +45,22 @@ textInput.addEventListener(
     debounce(({ target }) => {
         const { value } = target;
         if (value) {
-            startTranslate(value);
+            onTranslate(value);
         } else {
             setTranslation({ translation: '' })
         }
     })
 );
 
-function startTranslate(data) {
+function onTranslate(data) {
     if (!data) return;
     const text = typeof data === 'string' ? data : data[0];
     if (!text) return;
 
-    const { sl, tl } = /[а-яёА-ЯЁ]+/.test(text) ? { sl: LANGUAGE_CODES.RU, tl: LANGUAGE_CODES.EN } : { sl: LANGUAGE_CODES.AUTO, tl: LANGUAGE_CODES.RU };
-
-    if (source.dataset.lang !== sl || target.dataset.lang !== tl) {
-        if (source.dataset.lang !== sl && target.dataset.lang !== tl) {
-            // change languages without rotate animation
-            swapLanguageInfo(sl, tl, false)
-        } else {
-            changeLanguageInfo(sl, tl)
-        }
-    }
+    const { sl, tl } = /[а-яёА-ЯЁ]+/.test(text) ? {
+        sl: LANGUAGE_CODES.RU,
+        tl: LANGUAGE_CODES.EN
+    } : { sl: LANGUAGE_CODES.AUTO, tl: LANGUAGE_CODES.RU };
 
     getTranslate({ text, sl, tl })
 }
@@ -85,9 +79,10 @@ async function getTranslate({ text, sl, tl }) {
     if (!text) return;
 
     translatedTextBlock.classList.add('fade')
-    more.href = `https://translate.google.com/#${sl}/${tl}/${encodeURI(text)}`;
 
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${encodeURI(text)}`;
+    more.href = `https://translate.google.com/#${sl}/${tl}/${encodeURIComponent(text)}`;
+
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dj=1&sl=${sl}&tl=${tl}&q=${encodeURIComponent(text)}`;
 
     try {
         const delay = new Promise(resolve => setTimeout(resolve, 100));
@@ -100,9 +95,13 @@ async function getTranslate({ text, sl, tl }) {
 
         const { sentences, src } = await response.json()
 
-        const currentSourceLang = source.dataset.lang
-        if (currentSourceLang !== src) {
-            changeLanguageInfo(src, tl)
+        if (source.dataset.lang !== src || target.dataset.lang !== tl) {
+            if (source.dataset.lang !== src && target.dataset.lang !== tl) {
+                // change languages without rotate animation
+                swapLanguageInfo(src, tl, false)
+            } else {
+                changeLanguageInfo(src, tl)
+            }
         }
 
         if (sentences && sentences.length > 0) {
@@ -165,12 +164,14 @@ function swapLanguageInfo(sl, tl, withRotate = true) {
 }
 
 function checkTextSize(text) {
-    if (text.length > 40 && !textInput.classList.contains('small')) {
+    if (text.length > 300 && !textInput.classList.contains('small')) {
         textInput.classList.add('small')
+        translatedTextBlock.classList.add('small')
     }
 
-    if (text.length <= 40 && textInput.classList.contains('small')) {
+    if (text.length <= 300 && textInput.classList.contains('small')) {
         textInput.classList.remove('small')
+        translatedTextBlock.classList.remove('small')
     }
 }
 
@@ -181,7 +182,20 @@ function clearInput() {
 
 function copyToClipboard() {
     const text = translatedTextBlock.innerText;
-    navigator.clipboard.writeText(text)
+    if (!text) return; // Не копировать, если текста нет
+
+    navigator.clipboard.writeText(text).then(() => {
+        // Успешно скопировано
+        copyButton.classList.add('copied');
+
+        // Убираем класс через 2 секунды
+        setTimeout(() => {
+            copyButton.classList.remove('copied');
+        }, 1000);
+    }).catch(err => {
+        // Обработка ошибки копирования, если нужно
+        console.error('Could not copy text: ', err);
+    });
 }
 
 function debounce(func) {

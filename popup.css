@@ -10,9 +10,8 @@ body {
 .content {
     background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0px 4px 9px 0px #0000001f;
-    margin: 20px;
-    margin-bottom: 0;
+    box-shadow: 0 4px 9px 0 #0000001f;
+    margin: 15px 15px 0;
     overflow: hidden;
 }
 
@@ -38,12 +37,11 @@ body {
 
 .input-area {
     display: flex;
-    padding: 15px;
-    padding-right: 40px;
     position: relative;
 }
 
-#text-input {
+.text-input {
+    padding: 15px 40px 15px 15px;
     background-clip: padding-box;
     background-color: transparent;
     border: none;
@@ -51,14 +49,14 @@ body {
     display: block;
     font-family: inherit;
     font-size: inherit;
-    line-height: inherit;
+    line-height: 18px;
     min-height: 160px;
-    padding: 0;
+    scrollbar-gutter: stable;
     width: 100%;
     resize: none;
 }
 
-#text-input:focus {
+.text-input:focus {
     outline: 0;
 }
 
@@ -70,8 +68,8 @@ body {
     background: #F2F4F9;
     min-height: 150px;
     position: relative;
-    padding: 15px;
-    padding-right: 40px;
+    padding: 0;
+    /*padding: 15px 5px 15px 15px;*/
 }
 
 #search-form {
@@ -86,6 +84,9 @@ body {
     white-space: pre-wrap;
     word-break: break-word;
     transition: opacity .2s, visibility .2s;
+    line-height: 18px;
+    scrollbar-gutter: stable;
+    padding: 15px 40px 15px 15px;
 }
 
 .fade {
@@ -94,7 +95,7 @@ body {
 
 .divider {
     background: #8D8F95;
-    margin: 0 20px;
+    margin: 0 15px;
     opacity: .2;
     height: 1px;
 }
@@ -108,10 +109,9 @@ body {
     cursor: pointer;
     display: flex;
     flex-shrink: 0;
-    height: 32px;
     justify-content: center;
     outline: 0;
-    padding: 0;
+    padding: 5px;
     position: relative;
     text-align: center;
     transition: background-color .25s ease, transform .25s ease;
@@ -121,37 +121,12 @@ body {
     user-select: none;
     vertical-align: middle;
     white-space: nowrap;
-    width: 32px;
 }
 
 .btn:hover {
     background-color: rgba(0, 42, 104, .04);
     transition-duration: 0.1s;
 }
-
-/* .btn:after {
-    content: "";
-    display: block;
-    position: absolute;
-    border-radius: 4em;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: all 0.5s;
-    box-shadow: 0 0 15px 5px #d7d7d7;
-}
-
-.btn:active:after {
-    box-shadow: 0 0 0 0 #d7d7d7;
-    position: absolute;
-    border-radius: 4em;
-    left: 0;
-    top: 0;
-    opacity: 1;
-    transition: 0s;
-} */
 
 .rotate {
     transform: rotate(180deg);
@@ -161,21 +136,20 @@ body {
 .btn.clear {
     position: absolute;
     top: 5px;
-    right: 5px;
+    right: 15px;
 }
 
 a {
     background-color: transparent;
-    /* text-decoration: none; */
-    text-decoration-thickness: 0.1px;
+    text-decoration-thickness: 1px;
 }
 
 .link {
     color: #8D8F95;
     display: inline-block;
     font-size: 12px;
-    padding: 5px;
-    margin: 10px 20px;
+    padding: 0;
+    margin: 10px 15px;
 }
 
 .link.powered {
@@ -186,9 +160,13 @@ a {
     float: right;
 }
 
-.link-arrow {
-    font-weight: bold;
-    font-family: monospace;
+.size-6 {
+    width: 24px;
+}
+
+.size-3 {
+    vertical-align: bottom;
+    width: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -207,6 +185,7 @@ a {
 
     #translate-box {
         background: #39383E;
+        overflow-y: auto;
     }
 
     .btn {
@@ -224,4 +203,17 @@ a {
     .btn:active:after {
         box-shadow: 0 0 0 0 #121212;
     }
+}
+
+/* Стили для управления иконками копирования */
+#copy-btn .icon-checked {
+    display: none; /* По умолчанию иконка с галочкой скрыта */
+}
+
+#copy-btn.copied .icon-copy {
+    display: none; /* Скрываем обычную иконку, когда кнопка нажата */
+}
+
+#copy-btn.copied .icon-checked {
+    display: block; /* Показываем галочку, когда кнопка нажата */
 }

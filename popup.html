@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <title></title>
@@ -12,56 +12,61 @@
 </head>
 
 <body>
-  <div class="content">
-    <div class="lang-info">
-      <span class="lang left" id="source-lang" data-lang="auto">Detect language</span>
-      <button id="swap-button" class="lang-swap btn" role="button" tabindex="0" aria-label="Переключить язык"
-        data-tooltip="Переключить язык" data-hotkey="Option+S">
-        <svg width="15" height="13" viewBox="0 0 15 13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M13.5818 9.47619L14.1122 8.94586L14.6425 9.47619L14.1122 10.0065L13.5818 9.47619ZM1.00001 10.2262C0.585793 10.2262 0.250007 9.8904 0.250007 9.47619C0.250007 9.06197 0.585793 8.72619 1.00001 8.72619L1.00001 10.2262ZM11.4634 6.29705L14.1122 8.94586L13.0515 10.0065L10.4027 7.35771L11.4634 6.29705ZM14.1122 10.0065L11.4634 12.6553L10.4027 11.5947L13.0515 8.94586L14.1122 10.0065ZM13.5818 10.2262L1.00001 10.2262L1.00001 8.72619L13.5818 8.72619L13.5818 10.2262Z" />
-          <path
-            d="M1.13245 3.64881L0.602116 3.11848L0.0717859 3.64881L0.602116 4.17914L1.13245 3.64881ZM13.7143 4.39881C14.1285 4.39881 14.4643 4.06302 14.4643 3.64881C14.4643 3.2346 14.1285 2.89881 13.7143 2.89881L13.7143 4.39881ZM3.25092 0.46967L0.602116 3.11848L1.66278 4.17914L4.31159 1.53033L3.25092 0.46967ZM0.602116 4.17914L3.25092 6.82795L4.31158 5.76729L1.66278 3.11848L0.602116 4.17914ZM1.13245 4.39881L13.7143 4.39881L13.7143 2.89881L1.13245 2.89881L1.13245 4.39881Z" />
-        </svg>
-      </button>
-      <span class="lang" id="translated-lang" data-lang="ru">Russian</span>
-    </div>
-    <div class="divider"></div>
-    <div class="input-area">
-      <textarea id="text-input" autofocus="" rows="7" class="text-input"
-        placeholder="Text will be automatically translated"></textarea>
-      <button id="clear-btn" class="clear btn" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
+  <div class="container">
+    <div class="content">
+      <div class="lang-info">
+        <span class="lang left" id="source-lang" data-lang="auto">Detect language</span>
+        <button id="swap-button" class="lang-swap btn" role="button" tabindex="0" aria-label="Переключить язык"
+          data-tooltip="Переключить язык" data-hotkey="Option+S">
+          <svg width="15" height="13" viewBox="0 0 15 13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M13.5818 9.47619L14.1122 8.94586L14.6425 9.47619L14.1122 10.0065L13.5818 9.47619ZM1.00001 10.2262C0.585793 10.2262 0.250007 9.8904 0.250007 9.47619C0.250007 9.06197 0.585793 8.72619 1.00001 8.72619L1.00001 10.2262ZM11.4634 6.29705L14.1122 8.94586L13.0515 10.0065L10.4027 7.35771L11.4634 6.29705ZM14.1122 10.0065L11.4634 12.6553L10.4027 11.5947L13.0515 8.94586L14.1122 10.0065ZM13.5818 10.2262L1.00001 10.2262L1.00001 8.72619L13.5818 8.72619L13.5818 10.2262Z" />
+            <path
+              d="M1.13245 3.64881L0.602116 3.11848L0.0717859 3.64881L0.602116 4.17914L1.13245 3.64881ZM13.7143 4.39881C14.1285 4.39881 14.4643 4.06302 14.4643 3.64881C14.4643 3.2346 14.1285 2.89881 13.7143 2.89881L13.7143 4.39881ZM3.25092 0.46967L0.602116 3.11848L1.66278 4.17914L4.31159 1.53033L3.25092 0.46967ZM0.602116 4.17914L3.25092 6.82795L4.31158 5.76729L1.66278 3.11848L0.602116 4.17914ZM1.13245 4.39881L13.7143 4.39881L13.7143 2.89881L1.13245 2.89881L1.13245 4.39881Z" />
+          </svg>
+        </button>
+        <span class="lang" id="translated-lang" data-lang="ru">Russian</span>
+      </div>
+      <div class="divider"></div>
+      <div class="input-area">
+        <textarea id="text-input" autofocus="" rows="7" class="text-input"
+          placeholder="Text will be automatically translated"></textarea>
+        <button id="clear-btn" class="clear btn" tabindex="0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
 
-    <div id="translate-box">
-      <div id="translation" class="translation"></div>
-      <button id="copy-btn" class="copy btn" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-             stroke="currentColor" class="size-6 icon-copy">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"/>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6 icon-checked">
-          <path fill-rule="evenodd"
-                d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z" clip-rule="evenodd"/>
-          <path fill-rule="evenodd"
-                d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375Zm9.586 4.594a.75.75 0 0 0-1.172-.938l-2.476 3.096-.908-.907a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.116-.062l3-3.75Z" clip-rule="evenodd"/>
-        </svg>
+      <div id="translate-box">
+        <div id="translation" class="translation"></div>
+        <button id="copy-btn" class="copy btn" tabindex="0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="size-6 icon-copy">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6 icon-checked">
+            <path fill-rule="evenodd"
+                  d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z" clip-rule="evenodd"/>
+            <path fill-rule="evenodd"
+                  d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375Zm9.586 4.594a.75.75 0 0 0-1.172-.938l-2.476 3.096-.908-.907a.75.75 0 0 0-1.06 1.06l1.5 1.5a.75.75 0 0 0 1.116-.062l3-3.75Z" clip-rule="evenodd"/>
+          </svg>
 
-      </button>
+        </button>
+      </div>
+
+    </div>
+    <div>
+      <a class="link powered" href="https://t.me/iliyaking46" target="_blank">Created by @iliyaking</a>
+      <a class="link more" href="https://translate.google.com/" target="_blank">Translate on <b>Google</b>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-3">
+          <path fill-rule="evenodd"
+                d="M15.75 2.25H21a.75.75 0 0 1 .75.75v5.25a.75.75 0 0 1-1.5 0V4.81L8.03 17.03a.75.75 0 0 1-1.06-1.06L19.19 3.75h-3.44a.75.75 0 0 1 0-1.5Zm-10.5 4.5a1.5 1.5 0 0 0-1.5 1.5v10.5a1.5 1.5 0 0 0 1.5 1.5h10.5a1.5 1.5 0 0 0 1.5-1.5V10.5a.75.75 0 0 1 1.5 0v8.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V8.25a3 3 0 0 1 3-3h8.25a.75.75 0 0 1 0 1.5H5.25Z" clip-rule="evenodd"/>
+        </svg>
+      </a>
     </div>
   </div>
-  <a class="link powered" href="https://t.me/iliyaking46" target="_blank">Powered by iliyaking</a>
-  <a class="link more" href="https://translate.google.com/" target="_blank">Translate on <b>Google</b>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-3">
-      <path fill-rule="evenodd"
-            d="M15.75 2.25H21a.75.75 0 0 1 .75.75v5.25a.75.75 0 0 1-1.5 0V4.81L8.03 17.03a.75.75 0 0 1-1.06-1.06L19.19 3.75h-3.44a.75.75 0 0 1 0-1.5Zm-10.5 4.5a1.5 1.5 0 0 0-1.5 1.5v10.5a1.5 1.5 0 0 0 1.5 1.5h10.5a1.5 1.5 0 0 0 1.5-1.5V10.5a.75.75 0 0 1 1.5 0v8.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V8.25a3 3 0 0 1 3-3h8.25a.75.75 0 0 1 0 1.5H5.25Z" clip-rule="evenodd"/>
-    </svg>
-  </a>
   <script src="languages.js" type="module"></script>
   <script src="popup.js" type="module"></script>
 </body>

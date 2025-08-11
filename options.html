@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Translate Helper - Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="utf8">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 40px 20px;
+      color: #202124;
+      line-height: 1.6;
+    }
+    
+    .options-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .options-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .options-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+    
+    .options-subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+      margin: 0;
+    }
+    
+    .options-content {
+      padding: 40px;
+    }
+    
+    .setting-group {
+      margin-bottom: 32px;
+    }
+    
+    .setting-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    .setting-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #202124;
+      font-size: 16px;
+    }
+    
+    .setting-description {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 16px;
+    }
+    
+    .setting-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e8eaed;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
+    
+    .setting-input:focus {
+      outline: none;
+      border-color: #4285f4;
+    }
+    
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+    }
+    
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border: 2px solid #e8eaed;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+    }
+    
+    .radio-option:hover {
+      border-color: #4285f4;
+      background: #f8f9ff;
+    }
+    
+    .radio-option.selected {
+      border-color: #4285f4;
+      background: #e8f0fe;
+    }
+    
+    .radio-option input[type="radio"] {
+      margin: 0;
+    }
+    
+    .radio-option label {
+      font-weight: 500;
+      margin: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .radio-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .radio-badge.api {
+      background: #e8f0fe;
+      color: #1a73e8;
+    }
+    
+    .radio-badge.ai {
+      background: #e8f5e8;
+      color: #137333;
+    }
+    
+    .buttons-container {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid #e8eaed;
+    }
+    
+    .save-button {
+      flex: 1;
+      padding: 12px 24px;
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    
+    .save-button:hover {
+      background: #3367d6;
+    }
+    
+    .save-button:disabled {
+      background: #dadce0;
+      cursor: not-allowed;
+    }
+    
+    .reset-button {
+      padding: 12px 24px;
+      background: white;
+      color: #5f6368;
+      border: 2px solid #e8eaed;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .reset-button:hover {
+      border-color: #d93025;
+      color: #d93025;
+      background: #fce8e6;
+    }
+    
+    .status-message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .status-message.success {
+      background: #e8f5e8;
+      color: #137333;
+      border: 1px solid #ceead6;
+    }
+    
+    .status-message.error {
+      background: #fce8e6;
+      color: #d93025;
+      border: 1px solid #f9dedc;
+    }
+    
+    .status-message.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="options-container">
+    <div class="options-header">
+      <h1 class="options-title">Translate Helper</h1>
+      <p class="options-subtitle">Configure your translation preferences</p>
+    </div>
+    
+    <div class="options-content">
+
+      <form id="options-form">
+        <div class="setting-group">
+          <label class="setting-label">Translation Method</label>
+          <div class="setting-description">Choose between Google Translate API or Chrome's built-in AI translator</div>
+          <div class="radio-group">
+            <div class="radio-option" id="api-option">
+              <input type="radio" id="method-api" name="translationMethod" value="api">
+              <label for="method-api">Google Translate API</label>
+              <span class="radio-badge api">API</span>
+            </div>
+            <div class="radio-option" id="ai-option">
+              <input type="radio" id="method-ai" name="translationMethod" value="ai">
+              <label for="method-ai">Chrome Built-in AI</label>
+              <span class="radio-badge ai">AI</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label" for="main-language">Main Language</label>
+          <div class="setting-description">Your primary language - text in this language will be translated to secondary language</div>
+          <select id="main-language" name="mainLanguage" class="setting-input">
+            <option value="en">English</option>
+            <option value="ru">Russian</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+            <option value="zh">Chinese</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label" for="secondary-language">Secondary Language</label>
+          <div class="setting-description">Your secondary language - text not in main language will be translated to this</div>
+          <select id="secondary-language" name="secondaryLanguage" class="setting-input">
+            <option value="en">English</option>
+            <option value="ru">Russian</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+            <option value="zh">Chinese</option>
+          </select>
+        </div>
+
+        <div class="buttons-container">
+          <button type="submit" class="save-button" id="save-button">Save Settings</button>
+          <button type="button" class="reset-button" id="reset-button">Reset to Defaults</button>
+        </div>
+      </form>
+      
+      <div class="status-message" id="status-message"></div>
+    </div>
+  </div>
+
+  <script src="settings.js" type="module"></script>
+  <script src="options.js" type="module"></script>
+</body>
+
+</html>

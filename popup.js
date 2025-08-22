@@ -310,7 +310,7 @@ async function detectLanguageFromText(text, fallbackLanguage = 'en') {
             if (results && results.length > 0) {
                 const topResult = results[0];
                 // Only use the result if confidence is reasonable
-                if (topResult.confidence > 0.5) {
+                if (topResult.confidence > 0.1) {
                     return topResult.detectedLanguage;
                 }
             }
@@ -354,14 +354,10 @@ async function detectMainLanguage(text, mainLanguage) {
         if (self.LanguageDetector) {
             const detector = await LanguageDetector.create();
             const results = await detector.detect(text);
-            
-            // Check if the detected language matches the main language
-            if (results && results.length > 0) {
-                const topResult = results[0];
-                // Only use the result if confidence is reasonable
-                if (topResult.confidence > 0.5) {
-                    return topResult.detectedLanguage === mainLanguage;
-                }
+
+            // If any result matches the main language, return true
+            if (results && results.some(r => r.detectedLanguage === mainLanguage && r.confidence > 0.1)) {
+                return true;
             }
         }
     } catch (error) {

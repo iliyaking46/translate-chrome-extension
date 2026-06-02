@@ -80,7 +80,14 @@ async function saveSettings() {
             mainLanguage: formData.get('mainLanguage'),
             secondaryLanguage: formData.get('secondaryLanguage')
         };
-        
+
+        if (settings.mainLanguage === settings.secondaryLanguage) {
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Settings';
+            showStatusMessage('Main and secondary languages must be different', 'error');
+            return;
+        }
+
         const success = await Settings.set(settings);
         
         if (success) {

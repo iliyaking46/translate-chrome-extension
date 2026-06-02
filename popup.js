@@ -298,6 +298,23 @@ function openSettings() {
     chrome.runtime.openOptionsPage();
 }
 
+const LANGUAGE_PATTERNS = {
+    'en': /\b(the|and|for|are|but|not|you|all|can|had|her|was|one|our|out|day|get|has|him|his|how|man|new|now|old|see|two|way|who|boy|did|its|let|put|say|she|too|use)\b/i,
+    'ru': /[а-яёА-ЯЁ]/,
+    'ja': /[぀-ゟ゠-ヿ]/,
+    'ko': /[가-힯]/,
+    'zh': /[一-鿿]/,
+    'ar': /[؀-ۿ]/,
+    'th': /[฀-๿]/,
+    'hi': /[ऀ-ॿ]/,
+    'he': /[֐-׿]/,
+    'de': /[äöüßÄÖÜ]|\b(der|die|das|und|ist|ich|sie|mit|auf|für|ein|von|zu|im|den|dem|einer|eine|einem|einen|wird|aus|am|bei|nach|über|durch|gegen|ohne|um|unter|vor|zwischen)\b/i,
+    'fr': /[àâäçéèêëîïôöùûüÿÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ]|\b(le|la|les|un|une|des|de|du|et|est|il|elle|je|tu|nous|vous|ils|elles|ce|cette|ces|son|sa|ses|mon|ma|mes|ton|ta|tes|notre|votre|leur|leurs)\b/i,
+    'es': /[ñáéíóúüÑÁÉÍÓÚÜ]|\b(el|la|los|las|un|una|de|del|y|es|en|que|por|con|para|su|sus|mi|mis|tu|tus|se|te|me|nos|os|le|les|lo|al)\b/i,
+    'it': /[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]|\b(il|la|lo|gli|le|un|una|di|del|della|dei|delle|e|è|in|che|per|con|su|sua|sue|suo|suoi|mia|mie|mio|miei|tua|tue|tuo|tuoi|si|ci|vi|li)\b/i,
+    'pt': /[àáâãäçéêëíîïóôõöúûüÀÁÂÃÄÇÉÊËÍÎÏÓÔÕÖÚÛÜ]|\b(o|a|os|as|um|uma|de|do|da|dos|das|e|é|em|que|por|com|para|seu|sua|seus|suas|meu|minha|meus|minhas|teu|tua|teus|tuas|se|te|me|nos|vos|lhe|lhes)\b/i
+};
+
 // Language detection helper functions
 async function detectLanguageFromText(text, fallbackLanguage = 'en') {
     try {
@@ -320,25 +337,8 @@ async function detectLanguageFromText(text, fallbackLanguage = 'en') {
     }
 
     // Fallback to pattern-based detection
-    const languagePatterns = {
-        'en': /\b(the|and|for|are|but|not|you|all|can|had|her|was|one|our|out|day|get|has|him|his|how|man|new|now|old|see|two|way|who|boy|did|its|let|put|say|she|too|use)\b/i,
-        'ru': /[а-яёА-ЯЁ]/,
-        'ja': /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/,
-        'ko': /[\uAC00-\uD7AF]/,
-        'zh': /[\u4E00-\u9FFF]/,
-        'ar': /[\u0600-\u06FF]/,
-        'th': /[\u0E00-\u0E7F]/,
-        'hi': /[\u0900-\u097F]/,
-        'he': /[\u0590-\u05FF]/,
-        'de': /[äöüßÄÖÜ]|\b(der|die|das|und|ist|ich|sie|mit|auf|für|ein|von|zu|im|den|dem|einer|eine|einem|einen|wird|aus|am|bei|nach|über|durch|gegen|ohne|um|unter|vor|zwischen)\b/i,
-        'fr': /[àâäçéèêëîïôöùûüÿÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ]|\b(le|la|les|un|une|des|de|du|et|est|il|elle|je|tu|nous|vous|ils|elles|ce|cette|ces|son|sa|ses|mon|ma|mes|ton|ta|tes|notre|votre|leur|leurs)\b/i,
-        'es': /[ñáéíóúüÑÁÉÍÓÚÜ]|\b(el|la|los|las|un|una|de|del|y|es|en|que|por|con|para|su|sus|mi|mis|tu|tus|se|te|me|nos|os|le|les|lo|al)\b/i,
-        'it': /[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]|\b(il|la|lo|gli|le|un|una|di|del|della|dei|delle|e|è|in|che|per|con|su|sua|sue|suo|suoi|mia|mie|mio|miei|tua|tue|tuo|tuoi|si|ci|vi|li)\b/i,
-        'pt': /[àáâãäçéêëíîïóôõöúûüÀÁÂÃÄÇÉÊËÍÎÏÓÔÕÖÚÛÜ]|\b(o|a|os|as|um|uma|de|do|da|dos|das|e|é|em|que|por|com|para|seu|sua|seus|suas|meu|minha|meus|minhas|teu|tua|teus|tuas|se|te|me|nos|vos|lhe|lhes)\b/i
-    };
-
     // Check for specific language patterns
-    for (const [lang, pattern] of Object.entries(languagePatterns)) {
+    for (const [lang, pattern] of Object.entries(LANGUAGE_PATTERNS)) {
         if (pattern.test(text)) {
             return lang;
         }
@@ -365,26 +365,9 @@ async function detectMainLanguage(text, mainLanguage) {
     }
 
     // Fallback to pattern-based detection
-    const languagePatterns = {
-        'en': /\b(the|and|for|are|but|not|you|all|can|had|her|was|one|our|out|day|get|has|him|his|how|man|new|now|old|see|two|way|who|boy|did|its|let|put|say|she|too|use)\b/i,
-        'ru': /[а-яёА-ЯЁ]/,
-        'ja': /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/,
-        'ko': /[\uAC00-\uD7AF]/,
-        'zh': /[\u4E00-\u9FFF]/,
-        'ar': /[\u0600-\u06FF]/,
-        'th': /[\u0E00-\u0E7F]/,
-        'hi': /[\u0900-\u097F]/,
-        'he': /[\u0590-\u05FF]/,
-        'de': /[äöüßÄÖÜ]|\b(der|die|das|und|ist|ich|sie|mit|auf|für|ein|von|zu|im|den|dem|einer|eine|einem|einen|wird|aus|am|bei|nach|über|durch|gegen|ohne|um|unter|vor|zwischen)\b/i,
-        'fr': /[àâäçéèêëîïôöùûüÿÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸ]|\b(le|la|les|un|une|des|de|du|et|est|il|elle|je|tu|nous|vous|ils|elles|ce|cette|ces|son|sa|ses|mon|ma|mes|ton|ta|tes|notre|votre|leur|leurs)\b/i,
-        'es': /[ñáéíóúüÑÁÉÍÓÚÜ]|\b(el|la|los|las|un|una|de|del|y|es|en|que|por|con|para|su|sus|mi|mis|tu|tus|se|te|me|nos|os|le|les|lo|al)\b/i,
-        'it': /[àèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ]|\b(il|la|lo|gli|le|un|una|di|del|della|dei|delle|e|è|in|che|per|con|su|sua|sue|suo|suoi|mia|mie|mio|miei|tua|tue|tuo|tuoi|si|ci|vi|li)\b/i,
-        'pt': /[àáâãäçéêëíîïóôõöúûüÀÁÂÃÄÇÉÊËÍÎÏÓÔÕÖÚÛÜ]|\b(o|a|os|as|um|uma|de|do|da|dos|das|e|é|em|que|por|com|para|seu|sua|seus|suas|meu|minha|meus|minhas|teu|tua|teus|tuas|se|te|me|nos|vos|lhe|lhes)\b/i
-    };
-
     // If we have a pattern for the main language, use it
-    if (languagePatterns[mainLanguage]) {
-        return languagePatterns[mainLanguage].test(text);
+    if (LANGUAGE_PATTERNS[mainLanguage]) {
+        return LANGUAGE_PATTERNS[mainLanguage].test(text);
     }
 
     // For languages without specific patterns, use the heuristic approach

@@ -10,7 +10,7 @@ chrome.contextMenus.onClicked.addListener(
 
     const { sl, tl } = /[а-яёА-ЯЁ]+/.test(selectionText) ? { sl: 'ru', tl: 'en' } : { sl: 'auto', tl: 'ru' };
 
-    const url = `https://translate.google.com/#${sl}/${tl}/${encodeURI(selectionText)}`;
+    const url = `https://translate.google.com/#${sl}/${tl}/${encodeURIComponent(selectionText)}`;
     chrome.tabs.create({ url: url });
   }
 )

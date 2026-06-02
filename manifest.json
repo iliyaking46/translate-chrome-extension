@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "version": "2.0.1",
+  "version": "2.0.2",
   "name": "Translate Helper",
-  "description": "Extension for easy translate text from websites using AI.",
+  "description": "Easily translate text from websites using built-in AI or Translate.",
   "action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"

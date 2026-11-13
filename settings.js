@@ -1,5 +1,3 @@
-'use strict';
-
 export const DEFAULT_SETTINGS = {
     translationMethod: 'ai', // 'api' or 'ai'
     mainLanguage: 'ru',
@@ -19,7 +17,6 @@ export class Settings {
 
     static async set(settings) {
         try {
-            // Check if chrome.storage is available
             if (!chrome?.storage?.sync) {
                 console.warn('Chrome storage not available, cannot save settings');
                 return false;
@@ -35,7 +32,6 @@ export class Settings {
 
     static async reset() {
         try {
-            // Check if chrome.storage is available
             if (!chrome?.storage?.sync) {
                 console.warn('Chrome storage not available, cannot reset settings');
                 return false;

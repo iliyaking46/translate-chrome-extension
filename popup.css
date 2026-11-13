@@ -235,3 +235,47 @@ a {
 #copy-btn.copied .icon-checked {
     display: block; /* Показываем галочку, когда кнопка нажата */
 }
+
+.notice {
+    align-items: center;
+    border-top: 1px solid rgba(141, 143, 149, .2);
+    color: #5f6368;
+    display: flex;
+    font-size: 12px;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 8px 15px;
+}
+
+.notice[hidden] {
+    display: none;
+}
+
+.notice-btn {
+    background: #e8f5e8;
+    border: 0;
+    border-radius: 4px;
+    color: #137333;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 8px;
+}
+
+.notice-btn:disabled {
+    cursor: default;
+    opacity: .7;
+}
+
+@media (prefers-color-scheme: dark) {
+    .notice {
+        color: #bdc1c6;
+    }
+
+    .notice-btn {
+        background: rgb(129 201 149 / 16%);
+        color: #81c995;
+    }
+}

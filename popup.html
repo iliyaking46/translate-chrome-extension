@@ -19,7 +19,7 @@
         </div>
         <span class="lang left" id="source-lang" data-lang="auto">Detect language</span>
         <button id="swap-button" class="lang-swap btn" role="button" tabindex="0" aria-label="Переключить язык"
-          data-tooltip="Переключить язык" data-hotkey="Option+S">
+          data-tooltip="Переключить язык">
           <svg width="15" height="13" viewBox="0 0 15 13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M13.5818 9.47619L14.1122 8.94586L14.6425 9.47619L14.1122 10.0065L13.5818 9.47619ZM1.00001 10.2262C0.585793 10.2262 0.250007 9.8904 0.250007 9.47619C0.250007 9.06197 0.585793 8.72619 1.00001 8.72619L1.00001 10.2262ZM11.4634 6.29705L14.1122 8.94586L13.0515 10.0065L10.4027 7.35771L11.4634 6.29705ZM14.1122 10.0065L11.4634 12.6553L10.4027 11.5947L13.0515 8.94586L14.1122 10.0065ZM13.5818 10.2262L1.00001 10.2262L1.00001 8.72619L13.5818 8.72619L13.5818 10.2262Z" />
@@ -48,6 +48,7 @@
 
       <div id="translate-box">
         <div id="translation" class="translation"></div>
+        <div id="notice" class="notice" hidden></div>
         <button id="copy-btn" class="copy btn" tabindex="0">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="size-6 icon-copy">
@@ -75,7 +76,6 @@
       </a>
     </div>
   </div>
-  <script src="languages.js" type="module"></script>
   <script src="popup.js" type="module"></script>
 </body>
 

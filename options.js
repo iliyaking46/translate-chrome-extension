@@ -1,4 +1,3 @@
-'use strict';
 import { Settings } from './settings.js';
 
 const optionsForm = document.getElementById('options-form');

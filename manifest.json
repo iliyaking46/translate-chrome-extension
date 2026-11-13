@@ -1,10 +1,15 @@
 {
   "manifest_version": 3,
-  "version": "2.0.2",
+  "version": "2.1.0",
   "name": "Translate Helper",
   "description": "Easily translate text from websites using built-in AI or Translate.",
   "action": {
-    "default_icon": "icon.png",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
     "default_popup": "popup.html"
   },
   "commands": {
@@ -17,16 +22,20 @@
     }
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "icons": {
-    "128": "icon.png"
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "permissions": [
     "scripting", "activeTab", "contextMenus", "storage"
   ],
   "host_permissions": [
-    "https://translate.googleapis.com/**"
+    "https://translate.googleapis.com/*"
   ],
   "options_page": "options.html"
 }

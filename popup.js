@@ -1,12 +1,12 @@
-'use strict';
 import { LANGUAGES } from './languages.js';
 import { Settings } from './settings.js';
-import { ApiTranslator } from './api-translator.js';
-import { AiTranslator } from './ai-translator.js';
+import { ApiTranslator, googleTranslateUrl } from './api-translator.js';
+import { AiTranslator, AI_MODEL_NOT_READY } from './ai-translator.js';
 
 const swapButton = document.getElementById('swap-button');
 const [source, target] = document.getElementsByClassName('lang')
 const translatedTextBlock = document.getElementById('translation');
+const noticeBlock = document.getElementById('notice');
 const copyButton = document.getElementById('copy-btn');
 const clearButton = document.getElementById('clear-btn');
 const more = document.getElementsByClassName('more')[0];
@@ -14,11 +14,15 @@ const textInput = document.getElementById('text-input');
 const settingsButton = document.getElementById('settings-button');
 const methodIndicator = document.getElementById('method-indicator');
 
-const LANGUAGE_CODES = {
-    EN: 'en',
-    RU: 'ru',
-    AUTO: 'auto',
-}
+const AUTO = 'auto';
+
+// Incremented on every new translation (and on clear) so that stale responses are dropped
+let requestId = 0;
+// Last successful translation: { text, translation, detectedLanguage }
+let lastResult = null;
+// Set once Chrome refuses to create a translator (e.g. its instance limit is hit):
+// retrying on every keystroke won't help, so use the API until the popup is reopened.
+let aiBlocked = false;
 
 swapButton.onclick = swapLanguages
 
@@ -31,7 +35,7 @@ settingsButton.onclick = openSettings;
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         await initializeSettings();
-        
+
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
         const [injectionResult] = await chrome.scripting.executeScript({
@@ -42,8 +46,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         checkTextSize(result)
         textInput.value = result;
         onTranslate(result);
-    } catch (error) {
-        console.log(error)
+    } catch {
+        // Restricted pages (chrome://, Web Store, new tab) don't allow script injection
     }
 });
 
@@ -56,61 +60,48 @@ textInput.addEventListener(
         if (value) {
             onTranslate(value);
         } else {
-            setTranslation({ translation: '' })
+            clearTranslation();
         }
     })
 );
 
-async function onTranslate(data) {
-    if (!data) return;
-    const text = typeof data === 'string' ? data : data[0];
+async function onTranslate(text) {
     if (!text) return;
 
-    try {
-        // Get user settings for language preferences
-        const settings = await Settings.get();
-        const { mainLanguage, secondaryLanguage } = settings;
+    const id = ++requestId;
+    const settings = await Settings.get();
+    const { mainLanguage, secondaryLanguage } = settings;
 
-        // Determine source and target languages based on settings
-        let sl, tl;
-        
-        // Simple language detection - check if text contains characters from main language
-        const isMainLanguage = await detectMainLanguage(text, mainLanguage);
-        
-        if (isMainLanguage) {
-            // Text is in main language, translate to secondary
-            sl = mainLanguage;
-            tl = secondaryLanguage;
-        } else {
-            // Text is not in main language, translate to main
-            // For AI translation, we need to detect the actual language since 'auto' is not supported
-            if (settings.translationMethod === 'ai') {
-                sl = await detectLanguageFromText(text, mainLanguage);
-            } else {
-                sl = LANGUAGE_CODES.AUTO; // Auto-detect source (API only)
-            }
-            tl = mainLanguage;
-        }
-
-        getTranslate({ text, sl, tl });
-    } catch (error) {
-        console.error('Error in onTranslate:', error);
-        // Fallback to old logic if settings fail
-        const { sl, tl } = /[а-яёА-ЯЁ]+/.test(text) ? {
-            sl: LANGUAGE_CODES.RU,
-            tl: LANGUAGE_CODES.EN
-        } : { sl: LANGUAGE_CODES.AUTO, tl: LANGUAGE_CODES.RU };
-
-        getTranslate({ text, sl, tl });
+    let sl, tl;
+    if (await detectMainLanguage(text, mainLanguage)) {
+        sl = mainLanguage;
+        tl = secondaryLanguage;
+    } else {
+        // Chrome AI does not support 'auto' as a source language
+        sl = settings.translationMethod === 'ai' ? await detectLanguageFromText(text, mainLanguage) : AUTO;
+        tl = mainLanguage;
     }
+
+    if (id !== requestId) return;
+    getTranslate({ text, sl, tl });
 }
 
 function swapLanguages() {
-    const [sl, tl] = swapLanguageInfo()
+    const sl = target.dataset.lang;
+    const tl = source.dataset.lang === AUTO ? lastResult?.detectedLanguage : source.dataset.lang;
 
-    textInput.value = translatedTextBlock.innerText;
-    translatedTextBlock.innerText = ''
-    checkTextSize(textInput.value)
+    // Nothing known to translate into (e.g. source is still "Detect language")
+    if (!tl || tl === AUTO) return;
+
+    swapLanguageInfo(sl, tl)
+
+    // Move the translation into the input only if it belongs to the current text;
+    // otherwise (error / no translation yet) re-translate the current text in the new direction.
+    if (lastResult && lastResult.text === textInput.value) {
+        textInput.value = lastResult.translation;
+        checkTextSize(textInput.value)
+    }
+    clearTranslation();
 
     getTranslate({ text: textInput.value, sl, tl })
 }
@@ -118,81 +109,170 @@ function swapLanguages() {
 async function getTranslate({ text, sl, tl }) {
     if (!text) return;
 
+    const id = ++requestId;
     translatedTextBlock.classList.add('fade');
+    hideNotice();
+    more.href = googleTranslateUrl(text, sl, tl);
+
+    const settings = await Settings.get();
+    let aiModelNotReady = null;
+    let result;
 
     try {
-        // Get current settings to determine translation method
-        const settings = await Settings.get();
-        
-        // Set fallback URL for Google Translate
-        more.href = `https://translate.google.com/#${sl}/${tl}/${encodeURIComponent(text)}`;
-
-        let result;
-        
-        if (settings.translationMethod === 'ai') {
-            // Use Chrome AI Translation
+        if (settings.translationMethod === 'ai' && !aiBlocked) {
             try {
-                result = await AiTranslator.translate({
-                    text,
-                    sourceLanguage: sl,
-                    targetLanguage: tl
-                });
+                result = await AiTranslator.translate({ text, sourceLanguage: sl, targetLanguage: tl });
             } catch (aiError) {
                 console.warn('AI translation failed, falling back to API:', aiError);
-                // Fallback to API if AI fails
-                result = await ApiTranslator.translate({
-                    text,
-                    sourceLanguage: sl,
-                    targetLanguage: tl
-                });
+                if (aiError.code === AI_MODEL_NOT_READY) aiModelNotReady = aiError;
+                if (aiError.name === 'NotSupportedError') aiBlocked = true;
+                result = await ApiTranslator.translate({ text, sourceLanguage: sl, targetLanguage: tl });
             }
         } else {
-            // Use Google API Translation
-            result = await ApiTranslator.translate({
-                text,
-                sourceLanguage: sl,
-                targetLanguage: tl
-            });
+            result = await ApiTranslator.translate({ text, sourceLanguage: sl, targetLanguage: tl });
         }
-
-        // Update language info if detection changed
-        const { detectedLanguage, translation } = result;
-        if (source.dataset.lang !== detectedLanguage || target.dataset.lang !== tl) {
-            if (source.dataset.lang !== detectedLanguage && target.dataset.lang !== tl) {
-                // change languages without rotate animation
-                swapLanguageInfo(detectedLanguage, tl, false);
-            } else {
-                changeLanguageInfo(detectedLanguage, tl);
-            }
-        }
-
-        // Display translation
-        setTranslation({ translation });
-
     } catch (error) {
+        if (id !== requestId) return;
         console.error('Translation error:', error);
-        
-        // Create fallback error message
-        const fallbackUrl = ApiTranslator.createFallbackUrl(text, sl, tl);
-        let errorMessage;
-        
-        if (error.message.includes('Chrome AI')) {
-            errorMessage = `Chrome AI translation not available. <br/><a href="${fallbackUrl}" target="_blank">Try Google Translate</a>`;
+        lastResult = null;
+        setError(error, text, sl, tl);
+        showAiNotice(settings, aiModelNotReady, false);
+        return;
+    }
+
+    if (id !== requestId) return;
+
+    const { detectedLanguage, translation, method } = result;
+    if (source.dataset.lang !== detectedLanguage || target.dataset.lang !== tl) {
+        if (source.dataset.lang !== detectedLanguage && target.dataset.lang !== tl) {
+            // change languages without rotate animation
+            swapLanguageInfo(detectedLanguage, tl, false);
         } else {
-            errorMessage = `Something went wrong, click link below for fix<br/><a href="${fallbackUrl}" target="_blank">Open in Google Translate...</a>`;
+            changeLanguageInfo(detectedLanguage, tl);
         }
-        
-        setTranslation({ translation: errorMessage, error: true });
+    }
+
+    lastResult = { text, translation, detectedLanguage };
+    updateMethodIndicator(method, settings.translationMethod);
+    setTranslation(translation);
+    showAiNotice(settings, aiModelNotReady, method === 'api');
+}
+
+function showAiNotice(settings, aiModelNotReady, apiUsed) {
+    if (settings.translationMethod !== 'ai') return;
+    if (aiBlocked) showAiUnavailableNotice(apiUsed);
+    else if (aiModelNotReady) showDownloadNotice(aiModelNotReady, apiUsed);
+}
+
+function setTranslation(translation) {
+    translatedTextBlock.textContent = translation;
+    translatedTextBlock.classList.remove('fade')
+}
+
+function setError(error, text, sl, tl) {
+    const link = document.createElement('a');
+    link.href = googleTranslateUrl(text, sl, tl);
+    link.target = '_blank';
+    link.textContent = 'Open in Google Translate...';
+
+    translatedTextBlock.replaceChildren(
+        // fetch() rejects with TypeError when the request never reached the server
+        error instanceof TypeError || !navigator.onLine
+            ? 'No connection to Google Translate. Check your network (VPN/proxy) and try again, or use the link below'
+            : 'Something went wrong, click link below for fix',
+        document.createElement('br'),
+        link
+    );
+    translatedTextBlock.classList.remove('fade')
+}
+
+function clearTranslation() {
+    requestId++;
+    lastResult = null;
+    hideNotice();
+    setTranslation('');
+}
+
+// Pairs Chrome refused to download, remembered for the browser session so we don't nag
+const FAILED_PAIRS_KEY = 'aiDownloadFailedPairs';
+
+async function getFailedPairs() {
+    try {
+        const { [FAILED_PAIRS_KEY]: pairs = [] } = await chrome.storage.session.get(FAILED_PAIRS_KEY);
+        return pairs;
+    } catch {
+        return [];
     }
 }
 
-function setTranslation({ translation, error }) {
-    if (error) {
-        translatedTextBlock.innerHTML = translation;
-    } else {
-        translatedTextBlock.innerText = translation;
+async function rememberFailedPair(pair) {
+    const pairs = await getFailedPairs();
+    if (pairs.includes(pair)) return;
+    try {
+        await chrome.storage.session.set({ [FAILED_PAIRS_KEY]: [...pairs, pair] });
+    } catch {
+        // session storage unavailable — notice will just show again next time
     }
-    translatedTextBlock.classList.remove('fade')
+}
+
+function showAiUnavailableNotice(apiUsed = true) {
+    const message = document.createElement('span');
+    message.textContent = 'Chrome AI is unavailable right now (Chrome refused to create a translator)'
+        + (apiUsed ? ', Google API was used.' : '.') + ' Restarting Chrome usually helps.';
+    noticeBlock.replaceChildren(message);
+    noticeBlock.hidden = false;
+}
+
+async function showDownloadNotice({ sourceLanguage, targetLanguage }, apiUsed) {
+    const pair = `${sourceLanguage}-${targetLanguage}`;
+    if ((await getFailedPairs()).includes(pair)) return;
+
+    const from = LANGUAGES[sourceLanguage] || sourceLanguage;
+    const to = LANGUAGES[targetLanguage] || targetLanguage;
+
+    const message = document.createElement('span');
+    message.textContent = `Chrome AI model ${from} → ${to} is not downloaded`
+        + (apiUsed ? ', Google API was used.' : '.');
+
+    const button = document.createElement('button');
+    button.className = 'notice-btn';
+    button.textContent = 'Download AI model';
+    button.onclick = () => downloadAiModel(sourceLanguage, targetLanguage, button);
+
+    noticeBlock.replaceChildren(message, button);
+    noticeBlock.hidden = false;
+}
+
+function hideNotice() {
+    noticeBlock.hidden = true;
+    noticeBlock.replaceChildren();
+}
+
+async function downloadAiModel(sourceLanguage, targetLanguage, button) {
+    button.disabled = true;
+    button.textContent = 'Downloading... 0%';
+
+    try {
+        await AiTranslator.downloadModel({
+            sourceLanguage,
+            targetLanguage,
+            onProgress: loaded => button.textContent = `Downloading... ${Math.round(loaded * 100)}%`
+        });
+    } catch (error) {
+        console.warn('AI model download failed:', error);
+        if (error.name === 'NotSupportedError') {
+            await rememberFailedPair(`${sourceLanguage}-${targetLanguage}`);
+            aiBlocked = true;
+            showAiUnavailableNotice();
+        } else {
+            button.disabled = false;
+            button.textContent = 'Download failed, retry';
+        }
+        return;
+    }
+
+    hideNotice();
+    getTranslate({ text: textInput.value, sl: sourceLanguage, tl: targetLanguage });
 }
 
 function changeLanguageInfo(sl, tl) {
@@ -209,19 +289,14 @@ function changeLanguageInfo(sl, tl) {
 }
 
 function swapLanguageInfo(sl, tl, withRotate = true) {
-    const tempSourceLang = tl || source.dataset.lang
-    source.dataset.lang = sl || target.dataset.lang
-    target.dataset.lang = tempSourceLang
+    source.dataset.lang = sl
+    target.dataset.lang = tl
 
     source.classList.add('fade')
     target.classList.add('fade')
 
     if (withRotate) {
-        if (swapButton.classList.contains('rotate')) {
-            swapButton.classList.remove('rotate')
-        } else {
-            swapButton.classList.add('rotate')
-        }
+        swapButton.classList.toggle('rotate')
     }
 
     setTimeout(() => {
@@ -230,41 +305,30 @@ function swapLanguageInfo(sl, tl, withRotate = true) {
         source.classList.remove('fade')
         target.classList.remove('fade')
     }, 150)
-
-    return [source.dataset.lang, target.dataset.lang]
 }
 
 function checkTextSize(text) {
-    if (text.length > 300 && !textInput.classList.contains('small')) {
-        textInput.classList.add('small')
-        translatedTextBlock.classList.add('small')
-    }
-
-    if (text.length <= 300 && textInput.classList.contains('small')) {
-        textInput.classList.remove('small')
-        translatedTextBlock.classList.remove('small')
-    }
+    const isLong = text.length > 300;
+    textInput.classList.toggle('small', isLong)
+    translatedTextBlock.classList.toggle('small', isLong)
 }
 
 function clearInput() {
     textInput.value = ''
-    setTranslation({ translation: '' })
+    checkTextSize('')
+    clearTranslation();
 }
 
 function copyToClipboard() {
-    const text = translatedTextBlock.innerText;
-    if (!text) return; // Не копировать, если текста нет
+    const text = lastResult?.translation;
+    if (!text) return;
 
     navigator.clipboard.writeText(text).then(() => {
-        // Успешно скопировано
         copyButton.classList.add('copied');
-
-        // Убираем класс через 2 секунды
         setTimeout(() => {
             copyButton.classList.remove('copied');
         }, 1000);
     }).catch(err => {
-        // Обработка ошибки копирования, если нужно
         console.error('Could not copy text: ', err);
     });
 }
@@ -272,26 +336,22 @@ function copyToClipboard() {
 function debounce(func) {
     let timer;
     return (...args) => {
-        const next = () => func(...args);
-        if (timer) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(next, 500);
+        clearTimeout(timer);
+        timer = setTimeout(() => func(...args), 500);
     };
 }
 
 async function initializeSettings() {
-    try {
-        const settings = await Settings.get();
-        updateMethodIndicator(settings.translationMethod);
-    } catch (error) {
-        console.error('Error initializing settings:', error);
-    }
+    const settings = await Settings.get();
+    updateMethodIndicator(settings.translationMethod, settings.translationMethod);
 }
 
-function updateMethodIndicator(method) {
+function updateMethodIndicator(method, preferredMethod) {
     methodIndicator.textContent = method === 'ai' ? 'AI' : 'API';
     methodIndicator.classList.toggle('ai', method === 'ai');
+    methodIndicator.title = method !== preferredMethod
+        ? 'Chrome AI was unavailable, Google Translate API was used'
+        : 'Translation Method';
 }
 
 function openSettings() {
@@ -315,12 +375,23 @@ const LANGUAGE_PATTERNS = {
     'pt': /[àáâãäçéêëíîïóôõöúûüÀÁÂÃÄÇÉÊËÍÎÏÓÔÕÖÚÛÜ]|\b(o|a|os|as|um|uma|de|do|da|dos|das|e|é|em|que|por|com|para|seu|sua|seus|suas|meu|minha|meus|minhas|teu|tua|teus|tuas|se|te|me|nos|vos|lhe|lhes)\b/i
 };
 
+// One detector per popup: creating a new one on every keystroke leaks instances
+// and counts towards Chrome's built-in AI limits.
+let detectorPromise = null;
+function getLanguageDetector() {
+    detectorPromise ??= LanguageDetector.create().catch(error => {
+        detectorPromise = null;
+        throw error;
+    });
+    return detectorPromise;
+}
+
 // Language detection helper functions
 async function detectLanguageFromText(text, fallbackLanguage = 'en') {
     try {
         // Try Chrome AI Language Detection API first
         if (self.LanguageDetector) {
-            const detector = await LanguageDetector.create();
+            const detector = await getLanguageDetector();
             const results = await detector.detect(text);
             
             // Return the most confident result
@@ -352,7 +423,7 @@ async function detectMainLanguage(text, mainLanguage) {
     try {
         // Try Chrome AI Language Detection API first for better accuracy
         if (self.LanguageDetector) {
-            const detector = await LanguageDetector.create();
+            const detector = await getLanguageDetector();
             const results = await detector.detect(text);
 
             // If any result matches the main language, return true

@@ -27,21 +27,18 @@
     }
     
     .options-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-      text-align: center;
+      padding: 32px 40px 0;
     }
     
     .options-title {
-      font-size: 28px;
+      font-size: 22px;
       font-weight: 600;
-      margin: 0 0 8px 0;
+      margin: 0 0 4px 0;
     }
     
     .options-subtitle {
-      font-size: 16px;
-      opacity: 0.9;
+      font-size: 14px;
+      color: #5f6368;
       margin: 0;
     }
     
@@ -218,6 +215,74 @@
     .status-message.show {
       opacity: 1;
     }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        background: #121214;
+        color: #e8eaed;
+      }
+      .options-container {
+        background: #252527;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      }
+      .setting-label {
+        color: #e8eaed;
+      }
+      .setting-description,
+      .options-subtitle {
+        color: #9aa0a6;
+      }
+      .setting-input,
+      .radio-option,
+      .reset-button {
+        background: #39383E;
+        border-color: #4a494f;
+        color: #e8eaed;
+      }
+      .setting-input:focus,
+      .radio-option:hover {
+        border-color: #8ab4f8;
+      }
+      .radio-option:hover {
+        background: #3f3e45;
+      }
+      .radio-option.selected {
+        border-color: #8ab4f8;
+        background: rgb(138 180 248 / 12%);
+      }
+      .radio-badge.api {
+        background: rgb(138 180 248 / 16%);
+        color: #8ab4f8;
+      }
+      .radio-badge.ai {
+        background: rgb(129 201 149 / 16%);
+        color: #81c995;
+      }
+      .buttons-container {
+        border-top-color: #4a494f;
+      }
+      .save-button:disabled {
+        background: #4a494f;
+        color: #9aa0a6;
+      }
+      .reset-button:hover {
+        border-color: #f28b82;
+        color: #f28b82;
+        background: rgb(242 139 130 / 12%);
+      }
+      .status-message.success {
+        background: rgb(129 201 149 / 16%);
+        color: #81c995;
+        border-color: transparent;
+      }
+      .status-message.error {
+        background: rgb(242 139 130 / 16%);
+        color: #f28b82;
+        border-color: transparent;
+      }
+    }
   </style>
 </head>
 
@@ -267,7 +332,7 @@
 
         <div class="setting-group">
           <label class="setting-label" for="secondary-language">Secondary Language</label>
-          <div class="setting-description">Your secondary language - text not in main language will be translated to this</div>
+          <div class="setting-description">Text in your main language is translated to this one; text in any other language is translated to the main language</div>
           <select id="secondary-language" name="secondaryLanguage" class="setting-input">
             <option value="en">English</option>
             <option value="ru">Russian</option>

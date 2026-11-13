@@ -1,5 +1,3 @@
-'use strict';
-
 export const LANGUAGES = {
     "auto": "Detect language",
     "af": "Afrikaans",

@@ -221,6 +221,16 @@ a {
         background-color: rgb(201 201 201 / 8%);
     }
 
+    .method-indicator {
+        background: rgb(138 180 248 / 16%);
+        color: #8ab4f8;
+    }
+
+    .method-indicator.ai {
+        background: rgb(129 201 149 / 16%);
+        color: #81c995;
+    }
+
 }
 
 /* Стили для управления иконками копирования */

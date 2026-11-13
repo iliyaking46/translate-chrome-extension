@@ -136,7 +136,7 @@ async function getTranslate({ text, sl, tl }) {
         console.error('Translation error:', error);
         lastResult = null;
         setError(error, text, sl, tl);
-        showAiNotice(settings, aiModelNotReady);
+        showAiNotice(settings, aiModelNotReady, false);
         return;
     }
 
@@ -155,13 +155,13 @@ async function getTranslate({ text, sl, tl }) {
     lastResult = { text, translation, detectedLanguage };
     updateMethodIndicator(method, settings.translationMethod);
     setTranslation(translation);
-    showAiNotice(settings, aiModelNotReady);
+    showAiNotice(settings, aiModelNotReady, method === 'api');
 }
 
-function showAiNotice(settings, aiModelNotReady) {
+function showAiNotice(settings, aiModelNotReady, apiUsed) {
     if (settings.translationMethod !== 'ai') return;
-    if (aiBlocked) showAiUnavailableNotice();
-    else if (aiModelNotReady) showDownloadNotice(aiModelNotReady);
+    if (aiBlocked) showAiUnavailableNotice(apiUsed);
+    else if (aiModelNotReady) showDownloadNotice(aiModelNotReady, apiUsed);
 }
 
 function setTranslation(translation) {
@@ -215,15 +215,15 @@ async function rememberFailedPair(pair) {
     }
 }
 
-function showAiUnavailableNotice() {
+function showAiUnavailableNotice(apiUsed = true) {
     const message = document.createElement('span');
-    message.textContent = 'Chrome AI is unavailable right now (Chrome refused to create a translator), '
-        + 'Google API was used. Restarting Chrome usually helps.';
+    message.textContent = 'Chrome AI is unavailable right now (Chrome refused to create a translator)'
+        + (apiUsed ? ', Google API was used.' : '.') + ' Restarting Chrome usually helps.';
     noticeBlock.replaceChildren(message);
     noticeBlock.hidden = false;
 }
 
-async function showDownloadNotice({ sourceLanguage, targetLanguage }) {
+async function showDownloadNotice({ sourceLanguage, targetLanguage }, apiUsed) {
     const pair = `${sourceLanguage}-${targetLanguage}`;
     if ((await getFailedPairs()).includes(pair)) return;
 
@@ -231,7 +231,8 @@ async function showDownloadNotice({ sourceLanguage, targetLanguage }) {
     const to = LANGUAGES[targetLanguage] || targetLanguage;
 
     const message = document.createElement('span');
-    message.textContent = `Chrome AI model ${from} → ${to} is not downloaded, Google API was used.`;
+    message.textContent = `Chrome AI model ${from} → ${to} is not downloaded`
+        + (apiUsed ? ', Google API was used.' : '.');
 
     const button = document.createElement('button');
     button.className = 'notice-btn';
